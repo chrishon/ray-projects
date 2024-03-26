@@ -3,6 +3,8 @@
 from sagemaker.estimator import Estimator as RLEstimator
 from sagemaker import image_uris
 
+TUNE = False
+
 # NOTE: make sure to replace the role with an existing sagemaker execution role within your account
 role = "<SOME_SAGEMAKER_EXECUTION_ROLE_CREATED_IN_THE_AWS_ACCOUNT>"
 
@@ -42,6 +44,32 @@ estimator = RLEstimator(
 )
 
 # Training start
-estimator.fit(wait=False)
-job_name = estimator.latest_training_job.job_name
-print("Training job: %s" % job_name)
+if not TUNE:
+    estimator.fit(wait=False)
+    job_name = estimator.latest_training_job.job_name
+    print("Training job: %s" % job_name)
+else:
+    hyperparameter_ranges = {}
+    for key, val in hyperparameter_tuning.get("hyperparameter_ranges", {}).items():
+        if type(val) is dict:
+            if type(val["min_value"]) is int:
+                
+                hyperparameter_ranges[key] = IntegerParameter(
+                    min_value=val["min_value"], max_value=val["max_value"]
+                )
+            else:
+                hyperparameter_ranges[key] = ContinuousParameter(
+                    min_value=val["min_value"], max_value=val["max_value"]
+                )
+        if type(val) is list:
+            hyperparameter_ranges[key] = CategoricalParameter(val)
+            
+    tuner = HyperparameterTuner(
+                    estimator=estimator,
+                    objective_metric_name=hyperparameter_tuning.get("objective_metric", "episode_reward_mean"),
+                    hyperparameter_ranges=hyperparameter_ranges,
+                    metric_definitions=metric_definitions,
+                    max_jobs=hyperparameter_tuning.get("max_jobs", 1),
+                    max_parallel_jobs=hyperparameter_tuning.get("max_parallel_jobs", 1),
+                )
+
