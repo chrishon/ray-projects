@@ -2,6 +2,14 @@
 # from sagemaker.rl.estimator import RLEstimator
 from sagemaker.estimator import Estimator as RLEstimator
 from sagemaker import image_uris
+from sagemaker.tuner import HyperparameterTuner
+from sagemaker.parameter import (
+    ContinuousParameter,
+    CategoricalParameter,
+    IntegerParameter,
+)
+
+from tuning_config import hyperparameter_tuning
 
 TUNE = False
 
