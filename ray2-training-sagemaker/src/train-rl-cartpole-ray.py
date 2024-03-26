@@ -35,7 +35,7 @@ class SageMakerRayLauncher(object):
                 "run": "PPO",
                 "stop": {"training_iteration": 300, "episode_reward_mean": 500},
                 "config": {
-                    "framework": "tf2",
+                    "framework": "torch",
                     "num_sgd_iter": 30,
                     "lr": 0.0001,
                     "sgd_minibatch_size": 128,

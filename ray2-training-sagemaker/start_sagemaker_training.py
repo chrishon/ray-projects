@@ -14,14 +14,14 @@ from tuning_config import hyperparameter_tuning
 TUNE = False
 
 # NOTE: make sure to replace the role with an existing sagemaker execution role within your account
-role = "<SOME_SAGEMAKER_EXECUTION_ROLE_CREATED_IN_THE_AWS_ACCOUNT>"
+role = "SMFullAccessRole"
 
 # Retrieve the required tensorflow container image
 instance_type = "ml.m5.large"
 image_uri = image_uris.retrieve(
-    framework="tensorflow",
+    framework="pytorch",
     region="eu-central-1",
-    version="2.13",
+    version="2.0",
     py_version="py310",
     image_scope="training",
     instance_type=instance_type,
