@@ -43,12 +43,16 @@ estimator = RLEstimator(
     debugger_hook_config=False,
     instance_type=instance_type,
     instance_count=1,
+    use_spot_instances=True,
+    max_run=24*3600,
+    max_wait=24*3600,
     base_job_name="rl-cartpole-ray-2x",
     metric_definitions=metric_definitions,
     hyperparameters={
         # Let's override some hyperparameters
         "rl.training.config.lr": 0.0001,
     },
+    
 )
 
 # Training start
